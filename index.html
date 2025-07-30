@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LBV Predictor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      gap: 12px;
+    }
+
+    input, button {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <h1>Laminar Burning Velocity (LBV) Predictor</h1>
+
+  <form id="predictForm">
+    <input id="temp" type="number" placeholder="Temperature (K)" required />
+    <input id="pressure" type="number" placeholder="Pressure (atm)" required />
+    <input id="fuel" type="text" placeholder="Fuel Type" required />
+    <!-- Add more fields if needed -->
+    <button type="submit">Predict</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById("predictForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const data = {
+        temperature: parseFloat(document.getElementById("temp").value),
+        pressure: parseFloat(document.getElementById("pressure").value),
+        fuelType: document.getElementById("fuel").value
+        // Add other fields here if needed
+      };
+
+      fetch("https://lbvpredictor-backendsujal-2.onrender.com/api/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then(result => {
+          document.getElementById("result").innerText = "Predicted LBV: " + result;
+        })
+        .catch(error => {
+          document.getElementById("result").innerText = "Error: " + error.message;
+        });
+    });
+  </script>
+</body>
+</html>
+
